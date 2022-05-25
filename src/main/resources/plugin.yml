@@ -1,0 +1,13 @@
+name: GWLoader
+version: '${version}'
+main: groovyworld.core.GWCore
+api-version: 1.18
+prefix: GWLoader
+authors: [
+  AlgorithmLX
+]
+commands:
+  city:
+    description: This command send admins your city request on verification
+    usage: /city <x> <y> <z>
+    permission: gwl.any

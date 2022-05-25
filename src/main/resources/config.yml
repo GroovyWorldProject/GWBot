@@ -1,0 +1,18 @@
+asPlayerJoined:
+  message: "Welcome to the server, %s"
+city:
+  message:
+    success: "Success! I send this inform for verification admins"
+    failure: "Failure. Arguments is null"
+jda:
+  city:
+    channel: "заявка-на-город"
+    message:
+      color: "#FF0000"
+      title: "Knock-knock, here is an request for the city"
+      desc: "Coordinates:"
+      author: "Author:"
+  serverId: "958450217013891093"
+  prefix: "!"
+  version: "${version}"
+  token: "there your discord token"
