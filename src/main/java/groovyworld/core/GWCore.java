@@ -33,19 +33,25 @@ public class GWCore extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
-        this.getLogger().info("[GWCore] GWCore Started");
 
         try {
             main();
+            this.getLogger().info("GWLoader Started");
         } catch (LoginException e) {
-            this.getLogger().info("[GWCore] FATAL. DISABLING PLUGIN");
+            this.getLogger().info("FATAL. RETRYING...");
             throw new IllegalStateException(e);
         }
     }
 
     @Override
     public void onDisable() {
-        super.onDisable();
+        this.getLogger().info("Retrying loading...");
+        try {
+            onEnable();
+        } catch (Exception e) {
+            this.getLogger().info("FATAL RETRYING. DISABLING PLUGIN");
+            throw new IllegalStateException(e);
+        }
     }
 
     @EventHandler
@@ -68,9 +74,9 @@ public class GWCore extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (command.getName().equalsIgnoreCase("city")) {
-            if (args.length >= 0 && args.length < 3) {
-                sender.sendMessage(this.getConfig().getString("city.message.failure"));
-            } else if (args.length >= 3) {
+            if (args.length > 0 && args.length < 3) {
+                sender.sendMessage(this.getConfig().getString("city.message.failure.short"));
+            } else if (args.length == 3) {
                 if (sender instanceof Player player) {
                     sender.sendMessage(this.getConfig().getString("city.message.success"));
 
@@ -84,20 +90,21 @@ public class GWCore extends JavaPlugin implements Listener {
                                 .setTitle(this.getConfig().getString("jda.city.message.title"))
                                 .setDescription(
                                         this.getConfig().getString("jda.city.message.desc")
-                                                + " "
+                                                + " **"
                                                 + Arrays.toString(args)
-                                                + "\n "
-                                                + "\n "
+                                                + "**\n"
+                                                + "\n **"
                                                 + this.getConfig().getString("jda.city.message.author")
-                                                + " "
+                                                + "** "
                                                 + player.getName()
 
                                 );
                         sendMsg(channel, builder.build());
                     }
                 }
+            } else if (args.length > 3) {
+                sender.sendMessage(this.getConfig().getString("city.message.failure.large"));
             }
-
 
             return true;
         }

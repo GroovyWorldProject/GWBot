@@ -3,16 +3,18 @@ asPlayerJoined:
 city:
   message:
     success: "Success! I send this inform for verification admins"
-    failure: "Failure. Arguments is null"
+    failure:
+      short: "Failure. Arguments is very short. Use: /city <x> <y> <z>"
+      large: "Failure. Arguments is very large. Use: /city <x> <y> <z>"
 jda:
   city:
-    channel: "заявка-на-город"
+    channel: " " #Message channel
     message:
-      color: "#FF0000"
+      color: "#FF0000" #Embed color in HEX(Integer)
       title: "Knock-knock, here is an request for the city"
       desc: "Coordinates:"
       author: "Author:"
-  serverId: "958450217013891093"
-  prefix: "!"
+  serverId: "" #Server id
+  prefix: "!" #Standard Prefix
   version: "${version}"
-  token: "there your discord token"
+  token: "there your discord token" #Bot token. See https://discord.com/developers to get this
