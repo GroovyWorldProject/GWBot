@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.awt.*;
 
 public record HelpCommand(CommandManager manager) implements Commands {
-
     @Override
     public void handle(CommandContext ctx) {
         TextChannel channel = ctx.getChannel();

@@ -3,21 +3,24 @@ package groovyworld.bot.commands.moder.request;
 import groovyworld.bot.manager.CommandContext;
 import groovyworld.bot.manager.context.Commands;
 import groovyworld.bot.setup.Const;
+import groovyworld.core.GWCore;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.*;
 import java.util.List;
 
-public class DeclineCommand implements Commands {
+public record DeclineCommand(GWCore core) implements Commands {
     @Override
     public void handle(CommandContext ctx) {
         TextChannel channel = ctx.getChannel();
         Member member = ctx.getMember();
-        Member self = ctx.getSelfMember();
         List<Member> mentionedMembers = ctx.getMessage().getMentionedMembers();
+        Guild guild = ctx.getGuild();
 
         if (mentionedMembers.isEmpty()) {
             EmbedBuilder notFoundArguments = new EmbedBuilder();
@@ -40,7 +43,7 @@ public class DeclineCommand implements Commands {
         }
 
         EmbedBuilder success = new EmbedBuilder();
-        success.setColor(Color.CYAN).setTitle("Система оповещений GroovyWorld")
+        success.setColor(Color.RED).setTitle("Система оповещений GroovyWorld")
                 .setDescription(
                         "Доброго времени суток! " +
                                 "Я бот проекта GroovyWorld. " +
@@ -51,6 +54,8 @@ public class DeclineCommand implements Commands {
                 );
 
         target.getUser().openPrivateChannel().flatMap(channeled -> channeled.sendMessageEmbeds(success.build())).queue();
+
+        guild.kick(target).queue();
     }
 
     @Override

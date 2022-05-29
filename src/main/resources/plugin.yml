@@ -11,3 +11,18 @@ commands:
     description: This command send admins your city request on verification
     usage: /city <x> <y> <z>
     permission: gwl.any
+  c:
+    description: This command send admins your city request on verification
+    usage: /city <x> <y> <z>
+    permission: gwl.any
+    permission-message: You didn't have permission "gwl.any". Please report it to the administration
+  vanish:
+    description: Admin going to vanish
+    usage: /v
+    permission: gwl.admin
+    permission-message: You're not authorized to use this command
+  v:
+    description: Admin going to vanish
+    usage: /v
+    permission: gwl.admin
+    permission-message: You're not authorized to use this command

@@ -1,6 +1,5 @@
 package groovyworld.core;
 
-import groovyworld.bot.event.JoiningToServerEvent;
 import groovyworld.bot.manager.CommandManager;
 import groovyworld.bot.manager.LocalListener;
 import groovyworld.bot.setup.Const;
@@ -18,6 +17,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
@@ -64,7 +65,7 @@ public class GWCore extends JavaPlugin implements Listener {
         CommandManager manager = new CommandManager();
         jda = JDABuilder.createDefault(Const.token)
                 .setActivity(Activity.playing("Мои команды -> " + Const.prefix + "help"))
-                .addEventListeners(new LocalListener(manager), new JoiningToServerEvent())
+                .addEventListeners(new LocalListener(manager))
                 .setAutoReconnect(true)
                 .disableCache(EnumSet.of(CacheFlag.CLIENT_STATUS, CacheFlag.ACTIVITY, CacheFlag.EMOTE))
                 .enableCache(EnumSet.of(CacheFlag.VOICE_STATE))
@@ -73,7 +74,7 @@ public class GWCore extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (command.getName().equalsIgnoreCase("city")) {
+        if (command.getName().equalsIgnoreCase("city") || command.getName().equalsIgnoreCase("c")) {
             if (args.length > 0 && args.length < 3) {
                 sender.sendMessage(this.getConfig().getString("city.message.failure.short"));
             } else if (args.length == 3) {
@@ -106,6 +107,19 @@ public class GWCore extends JavaPlugin implements Listener {
                 sender.sendMessage(this.getConfig().getString("city.message.failure.large"));
             }
 
+            return true;
+        }
+
+        if (command.getName().equalsIgnoreCase("v") || command.getName().equalsIgnoreCase("vanish")) {
+            if (sender instanceof Player player) {
+                if (PotionEffectType.INVISIBILITY != null) {
+                    player.removePotionEffect(PotionEffectType.INVISIBILITY);
+                } else if (PotionEffectType.INVISIBILITY == null) {
+                    PotionEffect potionEffect = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false);
+
+                    player.addPotionEffect(potionEffect);
+                }
+            }
             return true;
         }
 

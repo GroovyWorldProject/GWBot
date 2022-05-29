@@ -3,6 +3,7 @@ package groovyworld.bot.commands.moder.request;
 import groovyworld.bot.manager.CommandContext;
 import groovyworld.bot.manager.context.Commands;
 import groovyworld.bot.setup.Const;
+import groovyworld.core.GWCore;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -10,18 +11,22 @@ import net.dv8tion.jda.api.entities.*;
 import java.awt.*;
 import java.util.List;
 
-public class AcceptCommand implements Commands {
+@SuppressWarnings({"ConstantConditions"})
+public record AcceptCommand(GWCore core) implements Commands {
     @Override
     public void handle(CommandContext ctx) {
         TextChannel channel = ctx.getChannel();
         Member member = ctx.getMember();
+        List<Member> mentionedMembers = ctx.getMessage().getMentionedMembers();
+        Guild guild = ctx.getGuild();
+        Role role = guild.getRoleById(core.getConfig().getString("jda.roleId"));
 
         if (ctx.getArgs().isEmpty()) {
             EmbedBuilder notFoundArguments = new EmbedBuilder();
             notFoundArguments
                     .setColor(Color.RED)
                     .setTitle("Неудача. Нет аргументов")
-                    .setDescription("Использование команды: `" + Const.prefix + setCommandName() + " <id пользователя>` ");
+                    .setDescription("Использование команды: `" + Const.prefix + setCommandName() + " <пользователь>` ");
             channel.sendMessageEmbeds(notFoundArguments.build()).queue();
         }
 
@@ -34,33 +39,23 @@ public class AcceptCommand implements Commands {
             channel.sendMessageEmbeds(userNoArgs.build()).queue();
         }
 
-        String argsJoined = String.join(" ", ctx.getArgs());
 
-        User user = ctx.getSelfUser();
+        EmbedBuilder success = new EmbedBuilder();
 
-        user.openPrivateChannel().flatMap(a -> {
-            if (argsJoined.isEmpty()) {
-                EmbedBuilder notFoundArguments = new EmbedBuilder();
-                notFoundArguments
-                        .setColor(Color.RED)
-                        .setTitle("Неудача. Нет аргументов")
-                        .setDescription("Использование команды: `" + Const.prefix + setCommandName() + " <id пользователя>` ");
-                channel.sendMessageEmbeds(notFoundArguments.build()).queue();
-            }
+        Member target = mentionedMembers.get(0);
 
-            EmbedBuilder success = new EmbedBuilder();
-            success.setColor(Color.CYAN).setTitle("Система оповещений GroovyWorld")
-                    .setDescription(
-                            "Доброго времени суток! " +
-                                    "Я бот проекта GroovyWorld. " +
-                                    "Хочу сообщить, что ваша заявка была рассмотрена и одобренна администрацией! " +
-                                    "Вот ваша ссылка, на проект, обязательно ознакомьтесь с правилами! \n" +
-                                    channel.createInvite().setMaxUses(1).complete().getUrl() + " \n" +
-                                    "Приятной игры на GroovyWorld!"
-                    );
+        success.setColor(Color.CYAN).setTitle("Система оповещений GroovyWorld")
+                .setDescription(
+                        "Доброго времени суток, " + target.getAsMention() +
+                        "Я бот проекта GroovyWorld. " +
+                        "Хочу сообщить,что ваша заявка была рассмотрена и одобренна администрацией! " +
+                        "Я выдам вам роль на сервере, для общения на нем. \n" +
+                        "Приятной игры на GroovyWorld!"
+                );
 
-            return channel.sendMessageEmbeds(success.build());
-        }).queue();
+        target.getUser().openPrivateChannel().flatMap(a -> a.sendMessageEmbeds(success.build())).queue();
+
+        guild.addRoleToMember(target, role).queue();
     }
 
     @Override

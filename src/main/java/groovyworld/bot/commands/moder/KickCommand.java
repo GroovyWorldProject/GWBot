@@ -9,6 +9,8 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.awt.*;
+
 public class KickCommand implements Commands {
     @Override
     public void handle(CommandContext ctx) {
@@ -55,6 +57,10 @@ public class KickCommand implements Commands {
                 (error) -> channel.sendMessageEmbeds(errorKick.build()).queue()
 
         );
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setTitle("До свидания!").setColor(Color.RED).setDescription("Вы были кикнуты по причине: " + reason);
+
+        target.getUser().openPrivateChannel().flatMap(msg -> msg.sendMessageEmbeds(builder.build())).queue();
     }
 
     @Override

@@ -12,6 +12,7 @@ import groovyworld.bot.commands.moder.request.DeclineCommand;
 import groovyworld.bot.commands.music.*;
 import groovyworld.bot.manager.context.Commands;
 import groovyworld.bot.setup.Const;
+import groovyworld.core.GWCore;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,12 +21,13 @@ import java.util.regex.Pattern;
 
 public class CommandManager {
     private final Map<String, Commands> commands = new HashMap<>();
+    private final GWCore instance = GWCore.instance();
 
     public CommandManager() {
         register(new PingCommand());
         register(new HelpCommand(this));
         register(new KickCommand());
-        register(new BanCommand());
+        register(new BanCommand(instance));
         register(new UnbanCommand());
         register(new JoinCommand());
         register(new LeaveCommand());
@@ -36,8 +38,8 @@ public class CommandManager {
         register(new NowPlayingCommand());
         register(new VersionCommand());
         register(new ClearCommand());
-        register(new AcceptCommand());
-        register(new DeclineCommand());
+        register(new AcceptCommand(instance));
+        register(new DeclineCommand(instance));
     }
 
     private void register(Commands commandClass) {

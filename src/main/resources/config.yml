@@ -18,3 +18,4 @@ jda:
   prefix: "!" #Standard Prefix
   version: "${version}"
   token: "there your discord token" #Bot token. See https://discord.com/developers to get this
+  roleId: " "
